@@ -9,38 +9,200 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegistarRouteImport } from './routes/registar'
+import { Route as RedefinirRouteImport } from './routes/redefinir'
+import { Route as RecuperarRouteImport } from './routes/recuperar'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppServicosRouteImport } from './routes/app.servicos'
+import { Route as AppPerfilRouteImport } from './routes/app.perfil'
+import { Route as AppMeusAgendamentosRouteImport } from './routes/app.meus-agendamentos'
+import { Route as AppAgendaRouteImport } from './routes/app.agenda'
 
+const RegistarRoute = RegistarRouteImport.update({
+  id: '/registar',
+  path: '/registar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RedefinirRoute = RedefinirRouteImport.update({
+  id: '/redefinir',
+  path: '/redefinir',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecuperarRoute = RecuperarRouteImport.update({
+  id: '/recuperar',
+  path: '/recuperar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppServicosRoute = AppServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPerfilRoute = AppPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMeusAgendamentosRoute = AppMeusAgendamentosRouteImport.update({
+  id: '/meus-agendamentos',
+  path: '/meus-agendamentos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAgendaRoute = AppAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/recuperar': typeof RecuperarRoute
+  '/redefinir': typeof RedefinirRoute
+  '/registar': typeof RegistarRoute
+  '/app/agenda': typeof AppAgendaRoute
+  '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
+  '/app/perfil': typeof AppPerfilRoute
+  '/app/servicos': typeof AppServicosRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/recuperar': typeof RecuperarRoute
+  '/redefinir': typeof RedefinirRoute
+  '/registar': typeof RegistarRoute
+  '/app/agenda': typeof AppAgendaRoute
+  '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
+  '/app/perfil': typeof AppPerfilRoute
+  '/app/servicos': typeof AppServicosRoute
+  '/app': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/recuperar': typeof RecuperarRoute
+  '/redefinir': typeof RedefinirRoute
+  '/registar': typeof RegistarRoute
+  '/app/agenda': typeof AppAgendaRoute
+  '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
+  '/app/perfil': typeof AppPerfilRoute
+  '/app/servicos': typeof AppServicosRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/login'
+    | '/recuperar'
+    | '/redefinir'
+    | '/registar'
+    | '/app/agenda'
+    | '/app/meus-agendamentos'
+    | '/app/perfil'
+    | '/app/servicos'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/recuperar'
+    | '/redefinir'
+    | '/registar'
+    | '/app/agenda'
+    | '/app/meus-agendamentos'
+    | '/app/perfil'
+    | '/app/servicos'
+    | '/app'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/login'
+    | '/recuperar'
+    | '/redefinir'
+    | '/registar'
+    | '/app/agenda'
+    | '/app/meus-agendamentos'
+    | '/app/perfil'
+    | '/app/servicos'
+    | '/app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  RecuperarRoute: typeof RecuperarRoute
+  RedefinirRoute: typeof RedefinirRoute
+  RegistarRoute: typeof RegistarRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/registar': {
+      id: '/registar'
+      path: '/registar'
+      fullPath: '/registar'
+      preLoaderRoute: typeof RegistarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/redefinir': {
+      id: '/redefinir'
+      path: '/redefinir'
+      fullPath: '/redefinir'
+      preLoaderRoute: typeof RedefinirRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recuperar': {
+      id: '/recuperar'
+      path: '/recuperar'
+      fullPath: '/recuperar'
+      preLoaderRoute: typeof RecuperarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,21 +210,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/servicos': {
+      id: '/app/servicos'
+      path: '/servicos'
+      fullPath: '/app/servicos'
+      preLoaderRoute: typeof AppServicosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/perfil': {
+      id: '/app/perfil'
+      path: '/perfil'
+      fullPath: '/app/perfil'
+      preLoaderRoute: typeof AppPerfilRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/meus-agendamentos': {
+      id: '/app/meus-agendamentos'
+      path: '/meus-agendamentos'
+      fullPath: '/app/meus-agendamentos'
+      preLoaderRoute: typeof AppMeusAgendamentosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/agenda': {
+      id: '/app/agenda'
+      path: '/agenda'
+      fullPath: '/app/agenda'
+      preLoaderRoute: typeof AppAgendaRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppAgendaRoute: typeof AppAgendaRoute
+  AppMeusAgendamentosRoute: typeof AppMeusAgendamentosRoute
+  AppPerfilRoute: typeof AppPerfilRoute
+  AppServicosRoute: typeof AppServicosRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAgendaRoute: AppAgendaRoute,
+  AppMeusAgendamentosRoute: AppMeusAgendamentosRoute,
+  AppPerfilRoute: AppPerfilRoute,
+  AppServicosRoute: AppServicosRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
+  RecuperarRoute: RecuperarRoute,
+  RedefinirRoute: RedefinirRoute,
+  RegistarRoute: RegistarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
