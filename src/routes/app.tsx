@@ -16,13 +16,13 @@ export const Route = createFileRoute("/app")({
   component: AppLayout,
 });
 
-const navItems = [
+const navItems: { to: "/app" | "/app/servicos" | "/app/agenda" | "/app/meus-agendamentos" | "/app/perfil"; label: string; icon: typeof Home; exact?: boolean }[] = [
   { to: "/app", label: "Início", icon: Home, exact: true },
   { to: "/app/servicos", label: "Serviços", icon: Scissors },
   { to: "/app/agenda", label: "Agenda", icon: Calendar },
   { to: "/app/meus-agendamentos", label: "Meus Agendamentos", icon: ListChecks },
   { to: "/app/perfil", label: "Perfil", icon: User },
-] as const;
+];
 
 function AppLayout() {
   const { user, loading, signOut } = useAuth();

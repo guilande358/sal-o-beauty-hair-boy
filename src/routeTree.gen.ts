@@ -17,6 +17,9 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppServicosRouteImport } from './routes/app.servicos'
+import { Route as AppPerfilRouteImport } from './routes/app.perfil'
+import { Route as AppMeusAgendamentosRouteImport } from './routes/app.meus-agendamentos'
+import { Route as AppAgendaRouteImport } from './routes/app.agenda'
 
 const RegistarRoute = RegistarRouteImport.update({
   id: '/registar',
@@ -58,6 +61,21 @@ const AppServicosRoute = AppServicosRouteImport.update({
   path: '/servicos',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPerfilRoute = AppPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMeusAgendamentosRoute = AppMeusAgendamentosRouteImport.update({
+  id: '/meus-agendamentos',
+  path: '/meus-agendamentos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAgendaRoute = AppAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -66,6 +84,9 @@ export interface FileRoutesByFullPath {
   '/recuperar': typeof RecuperarRoute
   '/redefinir': typeof RedefinirRoute
   '/registar': typeof RegistarRoute
+  '/app/agenda': typeof AppAgendaRoute
+  '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
+  '/app/perfil': typeof AppPerfilRoute
   '/app/servicos': typeof AppServicosRoute
   '/app/': typeof AppIndexRoute
 }
@@ -75,6 +96,9 @@ export interface FileRoutesByTo {
   '/recuperar': typeof RecuperarRoute
   '/redefinir': typeof RedefinirRoute
   '/registar': typeof RegistarRoute
+  '/app/agenda': typeof AppAgendaRoute
+  '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
+  '/app/perfil': typeof AppPerfilRoute
   '/app/servicos': typeof AppServicosRoute
   '/app': typeof AppIndexRoute
 }
@@ -86,6 +110,9 @@ export interface FileRoutesById {
   '/recuperar': typeof RecuperarRoute
   '/redefinir': typeof RedefinirRoute
   '/registar': typeof RegistarRoute
+  '/app/agenda': typeof AppAgendaRoute
+  '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
+  '/app/perfil': typeof AppPerfilRoute
   '/app/servicos': typeof AppServicosRoute
   '/app/': typeof AppIndexRoute
 }
@@ -98,6 +125,9 @@ export interface FileRouteTypes {
     | '/recuperar'
     | '/redefinir'
     | '/registar'
+    | '/app/agenda'
+    | '/app/meus-agendamentos'
+    | '/app/perfil'
     | '/app/servicos'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
@@ -107,6 +137,9 @@ export interface FileRouteTypes {
     | '/recuperar'
     | '/redefinir'
     | '/registar'
+    | '/app/agenda'
+    | '/app/meus-agendamentos'
+    | '/app/perfil'
     | '/app/servicos'
     | '/app'
   id:
@@ -117,6 +150,9 @@ export interface FileRouteTypes {
     | '/recuperar'
     | '/redefinir'
     | '/registar'
+    | '/app/agenda'
+    | '/app/meus-agendamentos'
+    | '/app/perfil'
     | '/app/servicos'
     | '/app/'
   fileRoutesById: FileRoutesById
@@ -188,15 +224,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppServicosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/perfil': {
+      id: '/app/perfil'
+      path: '/perfil'
+      fullPath: '/app/perfil'
+      preLoaderRoute: typeof AppPerfilRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/meus-agendamentos': {
+      id: '/app/meus-agendamentos'
+      path: '/meus-agendamentos'
+      fullPath: '/app/meus-agendamentos'
+      preLoaderRoute: typeof AppMeusAgendamentosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/agenda': {
+      id: '/app/agenda'
+      path: '/agenda'
+      fullPath: '/app/agenda'
+      preLoaderRoute: typeof AppAgendaRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppAgendaRoute: typeof AppAgendaRoute
+  AppMeusAgendamentosRoute: typeof AppMeusAgendamentosRoute
+  AppPerfilRoute: typeof AppPerfilRoute
   AppServicosRoute: typeof AppServicosRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAgendaRoute: AppAgendaRoute,
+  AppMeusAgendamentosRoute: AppMeusAgendamentosRoute,
+  AppPerfilRoute: AppPerfilRoute,
   AppServicosRoute: AppServicosRoute,
   AppIndexRoute: AppIndexRoute,
 }
