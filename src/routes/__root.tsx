@@ -37,10 +37,15 @@ export const Route = createRootRoute({
         content:
           "Salão de beleza em Moçambique. Tranças, cortes, manicure, alisamento e mais. Agende online em segundos.",
       },
-      { property: "og:title", content: "Salão [Nome do Salão]" },
-      { property: "og:description", content: "Realce a sua beleza natural. Agende online." },
+      { property: "og:title", content: "Salão [Nome do Salão] — Beleza & Elegância em Moçambique" },
+      { property: "og:description", content: "Salão [Nome do Salão] is a booking website for a hair salon, allowing clients to view services, book appointments, and manage their schedule." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Salão [Nome do Salão] — Beleza & Elegância em Moçambique" },
+      { name: "description", content: "Salão [Nome do Salão] is a booking website for a hair salon, allowing clients to view services, book appointments, and manage their schedule." },
+      { name: "twitter:description", content: "Salão [Nome do Salão] is a booking website for a hair salon, allowing clients to view services, book appointments, and manage their schedule." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c5fdb90b-9c41-4386-8597-54f4f6a321af/id-preview-a001f399--285d510b-7dca-49f1-8b50-4554daa009f5.lovable.app-1776614041899.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c5fdb90b-9c41-4386-8597-54f4f6a321af/id-preview-a001f399--285d510b-7dca-49f1-8b50-4554daa009f5.lovable.app-1776614041899.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
