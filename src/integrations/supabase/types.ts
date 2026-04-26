@@ -58,6 +58,96 @@ export type Database = {
           },
         ]
       }
+      payment_methods: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          instrucoes: string | null
+          numero: string
+          tipo: Database["public"]["Enums"]["payment_method"]
+          titular: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          instrucoes?: string | null
+          numero: string
+          tipo: Database["public"]["Enums"]["payment_method"]
+          titular: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          instrucoes?: string | null
+          numero?: string
+          tipo?: Database["public"]["Enums"]["payment_method"]
+          titular?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          appointment_id: string
+          comprovativo_url: string | null
+          created_at: string
+          id: string
+          metodo: Database["public"]["Enums"]["payment_method"]
+          notas: string | null
+          referencia: string
+          status: Database["public"]["Enums"]["payment_status"]
+          updated_at: string
+          user_id: string
+          valor_mzn: number
+        }
+        Insert: {
+          appointment_id: string
+          comprovativo_url?: string | null
+          created_at?: string
+          id?: string
+          metodo: Database["public"]["Enums"]["payment_method"]
+          notas?: string | null
+          referencia: string
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          user_id: string
+          valor_mzn: number
+        }
+        Update: {
+          appointment_id?: string
+          comprovativo_url?: string | null
+          created_at?: string
+          id?: string
+          metodo?: Database["public"]["Enums"]["payment_method"]
+          notas?: string | null
+          referencia?: string
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          user_id?: string
+          valor_mzn?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointment_slots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -178,6 +268,8 @@ export type Database = {
     Enums: {
       app_role: "admin" | "customer"
       appointment_status: "booked" | "occupied"
+      payment_method: "mpesa" | "emola" | "transferencia_bancaria"
+      payment_status: "pendente" | "confirmado" | "rejeitado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -307,6 +399,8 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "customer"],
       appointment_status: ["booked", "occupied"],
+      payment_method: ["mpesa", "emola", "transferencia_bancaria"],
+      payment_status: ["pendente", "confirmado", "rejeitado"],
     },
   },
 } as const
