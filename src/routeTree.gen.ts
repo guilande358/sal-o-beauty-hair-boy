@@ -18,8 +18,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppServicosRouteImport } from './routes/app.servicos'
 import { Route as AppPerfilRouteImport } from './routes/app.perfil'
+import { Route as AppPagamentosRouteImport } from './routes/app.pagamentos'
 import { Route as AppMeusAgendamentosRouteImport } from './routes/app.meus-agendamentos'
 import { Route as AppAgendaRouteImport } from './routes/app.agenda'
+import { Route as AppPagamentoAppointmentIdRouteImport } from './routes/app.pagamento.$appointmentId'
 
 const RegistarRoute = RegistarRouteImport.update({
   id: '/registar',
@@ -66,6 +68,11 @@ const AppPerfilRoute = AppPerfilRouteImport.update({
   path: '/perfil',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPagamentosRoute = AppPagamentosRouteImport.update({
+  id: '/pagamentos',
+  path: '/pagamentos',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppMeusAgendamentosRoute = AppMeusAgendamentosRouteImport.update({
   id: '/meus-agendamentos',
   path: '/meus-agendamentos',
@@ -76,6 +83,12 @@ const AppAgendaRoute = AppAgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPagamentoAppointmentIdRoute =
+  AppPagamentoAppointmentIdRouteImport.update({
+    id: '/pagamento/$appointmentId',
+    path: '/pagamento/$appointmentId',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -86,9 +99,11 @@ export interface FileRoutesByFullPath {
   '/registar': typeof RegistarRoute
   '/app/agenda': typeof AppAgendaRoute
   '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
+  '/app/pagamentos': typeof AppPagamentosRoute
   '/app/perfil': typeof AppPerfilRoute
   '/app/servicos': typeof AppServicosRoute
   '/app/': typeof AppIndexRoute
+  '/app/pagamento/$appointmentId': typeof AppPagamentoAppointmentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -98,9 +113,11 @@ export interface FileRoutesByTo {
   '/registar': typeof RegistarRoute
   '/app/agenda': typeof AppAgendaRoute
   '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
+  '/app/pagamentos': typeof AppPagamentosRoute
   '/app/perfil': typeof AppPerfilRoute
   '/app/servicos': typeof AppServicosRoute
   '/app': typeof AppIndexRoute
+  '/app/pagamento/$appointmentId': typeof AppPagamentoAppointmentIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -112,9 +129,11 @@ export interface FileRoutesById {
   '/registar': typeof RegistarRoute
   '/app/agenda': typeof AppAgendaRoute
   '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
+  '/app/pagamentos': typeof AppPagamentosRoute
   '/app/perfil': typeof AppPerfilRoute
   '/app/servicos': typeof AppServicosRoute
   '/app/': typeof AppIndexRoute
+  '/app/pagamento/$appointmentId': typeof AppPagamentoAppointmentIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,9 +146,11 @@ export interface FileRouteTypes {
     | '/registar'
     | '/app/agenda'
     | '/app/meus-agendamentos'
+    | '/app/pagamentos'
     | '/app/perfil'
     | '/app/servicos'
     | '/app/'
+    | '/app/pagamento/$appointmentId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -139,9 +160,11 @@ export interface FileRouteTypes {
     | '/registar'
     | '/app/agenda'
     | '/app/meus-agendamentos'
+    | '/app/pagamentos'
     | '/app/perfil'
     | '/app/servicos'
     | '/app'
+    | '/app/pagamento/$appointmentId'
   id:
     | '__root__'
     | '/'
@@ -152,9 +175,11 @@ export interface FileRouteTypes {
     | '/registar'
     | '/app/agenda'
     | '/app/meus-agendamentos'
+    | '/app/pagamentos'
     | '/app/perfil'
     | '/app/servicos'
     | '/app/'
+    | '/app/pagamento/$appointmentId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -231,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPerfilRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/pagamentos': {
+      id: '/app/pagamentos'
+      path: '/pagamentos'
+      fullPath: '/app/pagamentos'
+      preLoaderRoute: typeof AppPagamentosRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/meus-agendamentos': {
       id: '/app/meus-agendamentos'
       path: '/meus-agendamentos'
@@ -245,23 +277,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgendaRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/pagamento/$appointmentId': {
+      id: '/app/pagamento/$appointmentId'
+      path: '/pagamento/$appointmentId'
+      fullPath: '/app/pagamento/$appointmentId'
+      preLoaderRoute: typeof AppPagamentoAppointmentIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppAgendaRoute: typeof AppAgendaRoute
   AppMeusAgendamentosRoute: typeof AppMeusAgendamentosRoute
+  AppPagamentosRoute: typeof AppPagamentosRoute
   AppPerfilRoute: typeof AppPerfilRoute
   AppServicosRoute: typeof AppServicosRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppPagamentoAppointmentIdRoute: typeof AppPagamentoAppointmentIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAgendaRoute: AppAgendaRoute,
   AppMeusAgendamentosRoute: AppMeusAgendamentosRoute,
+  AppPagamentosRoute: AppPagamentosRoute,
   AppPerfilRoute: AppPerfilRoute,
   AppServicosRoute: AppServicosRoute,
   AppIndexRoute: AppIndexRoute,
+  AppPagamentoAppointmentIdRoute: AppPagamentoAppointmentIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
