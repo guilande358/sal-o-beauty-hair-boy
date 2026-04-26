@@ -2,7 +2,7 @@ import { Outlet, createFileRoute, redirect, Link, useLocation, useNavigate } fro
 import { useAuth } from "@/lib/auth-context";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
-import { Home, Scissors, Calendar, ListChecks, User, LogOut, Menu, X } from "lucide-react";
+import { Home, Scissors, Calendar, ListChecks, User, LogOut, Menu, X, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -16,11 +16,12 @@ export const Route = createFileRoute("/app")({
   component: AppLayout,
 });
 
-const navItems: { to: "/app" | "/app/servicos" | "/app/agenda" | "/app/meus-agendamentos" | "/app/perfil"; label: string; icon: typeof Home; exact?: boolean }[] = [
+const navItems: { to: "/app" | "/app/servicos" | "/app/agenda" | "/app/meus-agendamentos" | "/app/pagamentos" | "/app/perfil"; label: string; icon: typeof Home; exact?: boolean }[] = [
   { to: "/app", label: "Início", icon: Home, exact: true },
-  { to: "/app/servicos", label: "Serviços", icon: Scissors },
+  { to: "/app/servicos", label: "Cortes", icon: Scissors },
   { to: "/app/agenda", label: "Agenda", icon: Calendar },
   { to: "/app/meus-agendamentos", label: "Meus Agendamentos", icon: ListChecks },
+  { to: "/app/pagamentos", label: "Pagamentos", icon: Wallet },
   { to: "/app/perfil", label: "Perfil", icon: User },
 ];
 

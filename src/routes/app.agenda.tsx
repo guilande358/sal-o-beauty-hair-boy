@@ -173,10 +173,23 @@ function AgendaPage() {
       description: `${svc.nome} · ${formatPtDate(selectedDate)} às ${bookingSlot.start}`,
     });
     setBookingSlot(null);
-    if (search.service) {
-      navigate({ to: "/app/agenda", search: {} });
+
+    // Recupera o id do agendamento criado para redirecionar para pagamento
+    const { data: created } = await supabase
+      .from("appointments")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("data", formatDateISO(selectedDate))
+      .eq("hora_inicio", bookingSlot.start + ":00")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (created?.id) {
+      navigate({ to: "/app/pagamento/$appointmentId", params: { appointmentId: created.id } });
+    } else {
+      reload();
     }
-    reload();
   };
 
   return (

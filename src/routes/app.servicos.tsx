@@ -33,8 +33,8 @@ function ServicesPage() {
   return (
     <div className="mx-auto max-w-6xl">
       <div className="mb-8">
-        <h1 className="font-serif text-4xl">Serviços</h1>
-        <p className="mt-2 text-muted-foreground">Escolha um serviço para agendar</p>
+        <h1 className="font-serif text-4xl">Cortes</h1>
+        <p className="mt-2 text-muted-foreground">Escolhe um corte para agendar</p>
       </div>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((s) => (
@@ -46,13 +46,13 @@ function ServicesPage() {
                 <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" /> {s.duracao_min} min
                 </span>
-                <span className="font-serif text-2xl text-primary">{s.preco_mzn} MZN</span>
+                <span className="font-display text-2xl text-primary">{s.preco_mzn} MZN</span>
               </div>
               <Button
                 className="mt-4 w-full"
                 onClick={() => navigate({ to: "/app/agenda", search: { service: s.id } })}
               >
-                Agendar este serviço
+                Marcar este corte
               </Button>
             </CardContent>
           </Card>

@@ -47,13 +47,13 @@ function AppHome() {
       .then(({ data }) => setNext(data as NextAppointment | null));
   }, [user]);
 
-  const greeting = nome ? `Olá, ${nome.split(" ")[0]}!` : "Bem-vinda!";
+  const greeting = nome ? `Olá, ${nome.split(" ")[0]}!` : "Bem-vindo!";
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
       <div>
         <h1 className="font-serif text-4xl">{greeting}</h1>
-        <p className="mt-2 text-muted-foreground">O que vai fazer hoje?</p>
+        <p className="mt-2 text-muted-foreground">Pronto para o próximo corte?</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -88,20 +88,20 @@ function AppHome() {
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-elegant">
+        <Card className="border-border/60 bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-gold">
           <CardHeader>
             <CardTitle className="font-serif text-xl flex items-center gap-2">
-              <Scissors className="h-5 w-5" /> Marcar novo serviço
+              <Scissors className="h-5 w-5" /> Marcar novo corte
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="opacity-90">Escolha o seu horário e serviço favorito em poucos cliques.</p>
+            <p className="opacity-90">Escolhe o teu horário e estilo em poucos cliques.</p>
             <div className="flex gap-2">
               <Button asChild variant="secondary">
                 <Link to="/app/agenda">Abrir Agenda</Link>
               </Button>
-              <Button asChild variant="outline" className="border-white/40 bg-white/10 text-white hover:bg-white/20 hover:text-white">
-                <Link to="/app/servicos">Ver Serviços</Link>
+              <Button asChild variant="outline" className="border-primary-foreground/40 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20">
+                <Link to="/app/servicos">Ver Cortes</Link>
               </Button>
             </div>
           </CardContent>

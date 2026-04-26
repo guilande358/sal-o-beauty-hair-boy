@@ -5,16 +5,24 @@ import { Logo } from "@/components/Logo";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
-import { Clock, Star, MapPin, Phone, Instagram, Facebook, Menu, X } from "lucide-react";
+import {
+  Clock, Star, MapPin, Phone, Instagram, Facebook, Menu, X,
+  Smartphone, Building2, Scissors, Award, Users,
+} from "lucide-react";
 
-import heroSalon from "@/assets/hero-salon.jpg";
-import aboutSalon from "@/assets/about-salon.jpg";
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
-import g4 from "@/assets/gallery-4.jpg";
-import g5 from "@/assets/gallery-5.jpg";
-import g6 from "@/assets/gallery-6.jpg";
+import heroBarbearia from "@/assets/hero-barbearia.jpg";
+import aboutBarbearia from "@/assets/about-barbearia.jpg";
+import cutLowFade from "@/assets/cut-low-fade.jpg";
+import cutHighFade from "@/assets/cut-high-fade.jpg";
+import cutTaperFade from "@/assets/cut-taper-fade.jpg";
+import cutAfro from "@/assets/cut-afro.jpg";
+import cutDreadlocks from "@/assets/cut-dreadlocks.jpg";
+import cutCornrows from "@/assets/cut-cornrows.jpg";
+import cutBaldFade from "@/assets/cut-bald-fade.jpg";
+import cutDesign from "@/assets/cut-design.jpg";
+import cutTwists from "@/assets/cut-twists.jpg";
+import cutMohawk from "@/assets/cut-mohawk.jpg";
+import cutBoxBraids from "@/assets/cut-box-braids.jpg";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -28,30 +36,66 @@ interface Service {
   duracao_min: number;
 }
 
-const gallery = [g1, g2, g3, g4, g5, g6];
+const gallery = [
+  { src: cutLowFade, nome: "Low Fade" },
+  { src: cutHighFade, nome: "High Fade + Barba" },
+  { src: cutTaperFade, nome: "Taper Fade" },
+  { src: cutAfro, nome: "Afro Natural" },
+  { src: cutDreadlocks, nome: "Dreadlocks" },
+  { src: cutCornrows, nome: "Cornrows / Tranças Nagô" },
+  { src: cutBaldFade, nome: "Bald Fade + Barba" },
+  { src: cutDesign, nome: "Design / Hair Tattoo" },
+  { src: cutTwists, nome: "Mini Twists" },
+  { src: cutMohawk, nome: "Mohawk Africano" },
+  { src: cutBoxBraids, nome: "Box Braids" },
+];
 
 const testimonials = [
   {
-    nome: "Aline Macuácua",
-    texto: "Atendimento maravilhoso! Saí do salão a sentir-me uma rainha. Recomendo a todas.",
+    nome: "Ivandro Sitoe",
+    texto: "Melhor fade da cidade. Saio sempre com a barba no ponto e o cabelo perfeito.",
     rating: 5,
   },
   {
-    nome: "Tânia Mondlane",
-    texto: "As tranças ficaram impecáveis e duraram bastante. Ambiente acolhedor e profissional.",
+    nome: "Helton Macamo",
+    texto: "Marquei pela app, paguei via M-Pesa e fui buscar o corte. Tudo organizado.",
     rating: 5,
   },
   {
-    nome: "Belita Cossa",
-    texto: "O melhor salão de Maputo! Marquei pela app, super prático. Já voltei várias vezes.",
+    nome: "Délcio Nhantumbo",
+    texto: "Os designs ficam impecáveis. Já é o meu sítio favorito em Maputo.",
     rating: 5,
+  },
+];
+
+const paymentMethods = [
+  {
+    icon: Smartphone,
+    nome: "M-Pesa",
+    sub: "Vodacom",
+    color: "text-red-500",
+    desc: "Pague rapidamente com a sua carteira M-Pesa.",
+  },
+  {
+    icon: Smartphone,
+    nome: "e-Mola",
+    sub: "Movitel",
+    color: "text-yellow-500",
+    desc: "Use a sua carteira e-Mola da Movitel.",
+  },
+  {
+    icon: Building2,
+    nome: "Transferência",
+    sub: "BCI / Millennium BIM",
+    color: "text-blue-400",
+    desc: "Transferência bancária com envio do comprovativo.",
   },
 ];
 
 function LandingPage() {
   const { user } = useAuth();
   const [services, setServices] = useState<Service[]>([]);
-  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<{ src: string; nome: string } | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -71,13 +115,14 @@ function LandingPage() {
       <header className="fixed top-0 z-40 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Logo />
-          <nav className="hidden items-center gap-8 md:flex">
-            <a href="#sobre" className="text-sm hover:text-primary transition-colors">Sobre</a>
-            <a href="#servicos" className="text-sm hover:text-primary transition-colors">Serviços</a>
-            <a href="#galeria" className="text-sm hover:text-primary transition-colors">Galeria</a>
-            <a href="#testemunhos" className="text-sm hover:text-primary transition-colors">Testemunhos</a>
+          <nav className="hidden items-center gap-7 md:flex">
+            <a href="#sobre" className="font-display text-xs hover:text-primary transition-colors">Sobre</a>
+            <a href="#servicos" className="font-display text-xs hover:text-primary transition-colors">Cortes</a>
+            <a href="#galeria" className="font-display text-xs hover:text-primary transition-colors">Galeria</a>
+            <a href="#pagamentos" className="font-display text-xs hover:text-primary transition-colors">Pagamentos</a>
+            <a href="#testemunhos" className="font-display text-xs hover:text-primary transition-colors">Clientes</a>
             <Button asChild size="sm">
-              <Link to={ctaTarget}>{user ? "Minha conta" : "Agendar"}</Link>
+              <Link to={ctaTarget}>{user ? "A minha conta" : "Marcar Corte"}</Link>
             </Button>
           </nav>
           <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
@@ -87,12 +132,13 @@ function LandingPage() {
         {menuOpen && (
           <nav className="border-t border-border/40 bg-background md:hidden">
             <div className="container mx-auto flex flex-col gap-2 px-4 py-4">
-              <a href="#sobre" onClick={() => setMenuOpen(false)} className="py-2">Sobre</a>
-              <a href="#servicos" onClick={() => setMenuOpen(false)} className="py-2">Serviços</a>
-              <a href="#galeria" onClick={() => setMenuOpen(false)} className="py-2">Galeria</a>
-              <a href="#testemunhos" onClick={() => setMenuOpen(false)} className="py-2">Testemunhos</a>
+              <a href="#sobre" onClick={() => setMenuOpen(false)} className="py-2 font-display text-sm">Sobre</a>
+              <a href="#servicos" onClick={() => setMenuOpen(false)} className="py-2 font-display text-sm">Cortes</a>
+              <a href="#galeria" onClick={() => setMenuOpen(false)} className="py-2 font-display text-sm">Galeria</a>
+              <a href="#pagamentos" onClick={() => setMenuOpen(false)} className="py-2 font-display text-sm">Pagamentos</a>
+              <a href="#testemunhos" onClick={() => setMenuOpen(false)} className="py-2 font-display text-sm">Clientes</a>
               <Button asChild className="mt-2">
-                <Link to={ctaTarget}>{user ? "Minha conta" : "Agendar Agora"}</Link>
+                <Link to={ctaTarget}>{user ? "A minha conta" : "Marcar Corte"}</Link>
               </Button>
             </div>
           </nav>
@@ -102,29 +148,29 @@ function LandingPage() {
       {/* Hero */}
       <section className="relative flex min-h-[100svh] items-center pt-16">
         <img
-          src={heroSalon}
-          alt="Interior do salão"
+          src={heroBarbearia}
+          alt="Interior da barbearia"
           width={1920}
           height={1280}
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-foreground/70 via-foreground/40 to-primary/40" />
-        <div className="container relative z-10 mx-auto px-4 py-20 text-center text-white">
-          <p className="mb-4 text-sm uppercase tracking-[0.3em] text-white/80">
-            Salão [Nome do Salão] · Maputo
+        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/70 to-background/40" />
+        <div className="container relative z-10 mx-auto px-4 py-20 text-center text-foreground">
+          <p className="mb-4 font-display text-xs tracking-[0.4em] text-primary">
+            Barbearia [Nome] · Maputo, Moçambique
           </p>
-          <h1 className="mx-auto max-w-3xl font-serif text-5xl leading-tight md:text-7xl">
-            Realce a sua <em className="text-primary-glow">beleza</em> natural
+          <h1 className="mx-auto max-w-4xl font-serif text-5xl leading-[1.05] md:text-7xl">
+            Estilo. <em className="text-primary not-italic">Atitude.</em> Tradição.
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-white/90">
-            Cuidamos do seu cabelo e das suas unhas com profissionalismo, carinho e a elegância que você merece.
+          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
+            Cortes africanos e moçambicanos executados por mestres da navalha. Fade, dreads, tranças, designs — o seu estilo, à sua medida.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button asChild size="lg" className="min-w-[180px] shadow-elegant">
-              <Link to={ctaTarget}>Agendar Agora</Link>
+            <Button asChild size="lg" className="min-w-[200px] shadow-gold">
+              <Link to={ctaTarget}>Marcar o meu corte</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="min-w-[180px] bg-white/10 text-white border-white/40 backdrop-blur hover:bg-white/20 hover:text-white">
-              <a href="#servicos">Ver Serviços</a>
+            <Button asChild size="lg" variant="outline" className="min-w-[200px]">
+              <a href="#galeria">Ver catálogo</a>
             </Button>
           </div>
         </div>
@@ -134,45 +180,48 @@ function LandingPage() {
       <section id="sobre" className="py-24">
         <div className="container mx-auto grid items-center gap-12 px-4 md:grid-cols-2">
           <div className="order-2 md:order-1">
-            <p className="text-sm uppercase tracking-[0.25em] text-primary">Sobre o Salão</p>
+            <p className="font-display text-xs tracking-[0.3em] text-primary">Sobre Nós</p>
             <h2 className="mt-3 font-serif text-4xl md:text-5xl">
-              Um espaço pensado para si
+              Onde cada corte conta uma história
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              No coração de Maputo, o nosso salão combina técnicas modernas com o calor moçambicano.
-              Trabalhamos com produtos de qualidade e uma equipa apaixonada por realçar a beleza única de cada cliente.
+              No coração de Maputo, a nossa barbearia une técnica moderna ao orgulho africano.
+              Fade limpo, dreads cuidados, tranças tradicionais, designs ousados — fazemos tudo o que define o estilo do homem moçambicano.
             </p>
             <p className="mt-4 text-muted-foreground leading-relaxed">
-              Tranças, cortes, alisamentos, manicure, pedicure e muito mais — tudo num ambiente acolhedor e profissional.
+              Equipa especializada, ambiente descontraído, e respeito pelo tempo do cliente. Marca, vens, sais com estilo.
             </p>
-            <div className="mt-8 flex flex-wrap gap-6">
-              <div>
-                <p className="font-serif text-3xl text-primary">+5</p>
-                <p className="text-sm text-muted-foreground">Anos de experiência</p>
+            <div className="mt-8 grid grid-cols-3 gap-4">
+              <div className="border-l-2 border-primary pl-3">
+                <Award className="mb-1 h-4 w-4 text-primary" />
+                <p className="font-display text-3xl text-foreground">+5</p>
+                <p className="text-xs text-muted-foreground">Anos de bairro</p>
               </div>
-              <div>
-                <p className="font-serif text-3xl text-primary">+1000</p>
-                <p className="text-sm text-muted-foreground">Clientes satisfeitas</p>
+              <div className="border-l-2 border-primary pl-3">
+                <Scissors className="mb-1 h-4 w-4 text-primary" />
+                <p className="font-display text-3xl text-foreground">+2K</p>
+                <p className="text-xs text-muted-foreground">Cortes feitos</p>
               </div>
-              <div>
-                <p className="font-serif text-3xl text-primary">+10</p>
-                <p className="text-sm text-muted-foreground">Serviços disponíveis</p>
+              <div className="border-l-2 border-primary pl-3">
+                <Users className="mb-1 h-4 w-4 text-primary" />
+                <p className="font-display text-3xl text-foreground">+15</p>
+                <p className="text-xs text-muted-foreground">Estilos</p>
               </div>
             </div>
           </div>
           <div className="order-1 md:order-2">
             <div className="relative">
               <img
-                src={aboutSalon}
-                alt="Interior do salão"
-                width={1200}
-                height={1200}
+                src={aboutBarbearia}
+                alt="Barbeiro a trabalhar"
+                width={1024}
+                height={1024}
                 loading="lazy"
-                className="rounded-2xl shadow-elegant"
+                className="rounded-md shadow-elegant"
               />
-              <div className="absolute -bottom-6 -left-6 hidden rounded-2xl bg-primary p-6 text-primary-foreground shadow-elegant md:block">
-                <p className="font-serif text-2xl">Beleza & Elegância</p>
-                <p className="mt-1 text-sm opacity-90">Desde 2019</p>
+              <div className="absolute -bottom-6 -left-6 hidden rounded-md bg-primary p-5 text-primary-foreground shadow-gold md:block">
+                <p className="font-display text-xl tracking-widest">Brotherhood</p>
+                <p className="mt-1 font-serif text-sm italic opacity-90">Desde 2019</p>
               </div>
             </div>
           </div>
@@ -180,16 +229,16 @@ function LandingPage() {
       </section>
 
       {/* Serviços */}
-      <section id="servicos" className="bg-secondary/40 py-24">
+      <section id="servicos" className="bg-secondary/30 py-24">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm uppercase tracking-[0.25em] text-primary">Os Nossos Serviços</p>
-            <h2 className="mt-3 font-serif text-4xl md:text-5xl">Tudo o que precisa, num só lugar</h2>
+            <p className="font-display text-xs tracking-[0.3em] text-primary">Os Nossos Cortes</p>
+            <h2 className="mt-3 font-serif text-4xl md:text-5xl">Tudo o que precisas, num só sítio</h2>
             <p className="mt-4 text-muted-foreground">Preços em meticais (MZN). Duração aproximada por sessão.</p>
           </div>
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((s) => (
-              <Card key={s.id} className="group overflow-hidden border-border/60 transition-all hover:-translate-y-1 hover:shadow-elegant">
+              <Card key={s.id} className="group overflow-hidden border-border/60 bg-card transition-all hover:-translate-y-1 hover:border-primary/60 hover:shadow-gold">
                 <CardContent className="p-6">
                   <h3 className="font-serif text-2xl">{s.nome}</h3>
                   <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{s.descricao}</p>
@@ -197,7 +246,7 @@ function LandingPage() {
                     <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
                       <Clock className="h-4 w-4" /> {s.duracao_min} min
                     </span>
-                    <span className="font-serif text-2xl text-primary">{s.preco_mzn} MZN</span>
+                    <span className="font-display text-2xl text-primary">{s.preco_mzn} MZN</span>
                   </div>
                 </CardContent>
               </Card>
@@ -205,7 +254,7 @@ function LandingPage() {
           </div>
           <div className="mt-12 text-center">
             <Button asChild size="lg">
-              <Link to={ctaTarget}>Agendar um serviço</Link>
+              <Link to={ctaTarget}>Marcar agora</Link>
             </Button>
           </div>
         </div>
@@ -215,25 +264,29 @@ function LandingPage() {
       <section id="galeria" className="py-24">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm uppercase tracking-[0.25em] text-primary">Trabalhos Realizados</p>
-            <h2 className="mt-3 font-serif text-4xl md:text-5xl">Galeria</h2>
+            <p className="font-display text-xs tracking-[0.3em] text-primary">Catálogo</p>
+            <h2 className="mt-3 font-serif text-4xl md:text-5xl">Cortes Africanos & Moçambicanos</h2>
+            <p className="mt-4 text-muted-foreground">Inspira-te. Toca para ampliar.</p>
           </div>
-          <div className="mt-14 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
-            {gallery.map((src, i) => (
+          <div className="mt-14 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
+            {gallery.map((item) => (
               <button
-                key={i}
-                onClick={() => setLightbox(src)}
-                className="group relative aspect-square overflow-hidden rounded-xl shadow-soft"
+                key={item.nome}
+                onClick={() => setLightbox(item)}
+                className="group relative aspect-[4/5] overflow-hidden rounded-md border border-border/60 shadow-soft"
               >
                 <img
-                  src={src}
-                  alt={`Trabalho ${i + 1}`}
+                  src={item.src}
+                  alt={item.nome}
                   width={800}
                   height={1024}
                   loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-foreground/0 transition-colors group-hover:bg-foreground/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent opacity-90" />
+                <div className="absolute inset-x-0 bottom-0 p-3 text-left">
+                  <p className="font-display text-sm tracking-wider text-primary">{item.nome}</p>
+                </div>
               </button>
             ))}
           </div>
@@ -242,26 +295,62 @@ function LandingPage() {
 
       {lightbox && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/90 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 p-4"
           onClick={() => setLightbox(null)}
         >
-          <img src={lightbox} alt="" className="max-h-[90vh] max-w-[90vw] rounded-xl" />
-          <button className="absolute top-4 right-4 text-white" onClick={() => setLightbox(null)}>
+          <div className="relative">
+            <img src={lightbox.src} alt={lightbox.nome} className="max-h-[85vh] max-w-[90vw] rounded-md" />
+            <p className="mt-3 text-center font-display text-lg text-primary">{lightbox.nome}</p>
+          </div>
+          <button className="absolute top-4 right-4 text-foreground" onClick={() => setLightbox(null)}>
             <X className="h-8 w-8" />
           </button>
         </div>
       )}
 
-      {/* Testemunhos */}
-      <section id="testemunhos" className="bg-secondary/40 py-24">
+      {/* Pagamentos */}
+      <section id="pagamentos" className="bg-secondary/30 py-24">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm uppercase tracking-[0.25em] text-primary">Testemunhos</p>
-            <h2 className="mt-3 font-serif text-4xl md:text-5xl">O que dizem as nossas clientes</h2>
+            <p className="font-display text-xs tracking-[0.3em] text-primary">Pagamentos</p>
+            <h2 className="mt-3 font-serif text-4xl md:text-5xl">Paga como te der jeito</h2>
+            <p className="mt-4 text-muted-foreground">
+              Após marcar, escolhe o método e envia o comprovativo. Nós confirmamos.
+            </p>
+          </div>
+          <div className="mt-14 grid gap-5 md:grid-cols-3">
+            {paymentMethods.map((m) => {
+              const Icon = m.icon;
+              return (
+                <Card key={m.nome} className="border-border/60 bg-card transition-all hover:border-primary/60 hover:shadow-gold">
+                  <CardContent className="p-6 text-center">
+                    <Icon className={`mx-auto h-10 w-10 ${m.color}`} />
+                    <h3 className="mt-4 font-display text-xl tracking-wider">{m.nome}</h3>
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground">{m.sub}</p>
+                    <p className="mt-4 text-sm text-muted-foreground">{m.desc}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+          <div className="mt-10 text-center">
+            <Button asChild size="lg" variant="outline">
+              <Link to={ctaTarget}>Marcar e pagar</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Testemunhos */}
+      <section id="testemunhos" className="py-24">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="font-display text-xs tracking-[0.3em] text-primary">Clientes</p>
+            <h2 className="mt-3 font-serif text-4xl md:text-5xl">O que dizem os mano</h2>
           </div>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {testimonials.map((t) => (
-              <Card key={t.nome} className="border-border/60">
+              <Card key={t.nome} className="border-border/60 bg-card">
                 <CardContent className="p-8">
                   <div className="flex gap-1 text-primary">
                     {Array.from({ length: t.rating }).map((_, i) => (
@@ -269,7 +358,7 @@ function LandingPage() {
                     ))}
                   </div>
                   <p className="mt-4 font-serif italic text-lg leading-relaxed">"{t.texto}"</p>
-                  <p className="mt-6 font-medium">— {t.nome}</p>
+                  <p className="mt-6 font-display text-sm tracking-wider">— {t.nome}</p>
                 </CardContent>
               </Card>
             ))}
@@ -280,12 +369,12 @@ function LandingPage() {
       {/* CTA */}
       <section className="bg-gradient-to-br from-primary to-primary-glow py-20 text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="font-serif text-4xl md:text-5xl">Pronta para se sentir incrível?</h2>
+          <h2 className="font-serif text-4xl md:text-5xl">Pronto para o teu próximo corte?</h2>
           <p className="mx-auto mt-4 max-w-xl opacity-90">
-            Agende o seu próximo cuidado em poucos cliques. Sem chamadas, sem esperas.
+            Marca em 30 segundos. Sem chamadas, sem esperas. Paga depois.
           </p>
-          <Button asChild size="lg" variant="secondary" className="mt-8 min-w-[200px]">
-            <Link to={ctaTarget}>Agendar Agora</Link>
+          <Button asChild size="lg" variant="secondary" className="mt-8 min-w-[220px]">
+            <Link to={ctaTarget}>Marcar Corte Agora</Link>
           </Button>
         </div>
       </section>
@@ -296,11 +385,11 @@ function LandingPage() {
           <div className="md:col-span-2">
             <Logo />
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              Salão de beleza em Maputo, Moçambique. Cuidamos da sua beleza com paixão e profissionalismo.
+              Barbearia em Maputo, Moçambique. Cortes africanos, fade, dreads, tranças e designs.
             </p>
           </div>
           <div>
-            <h3 className="font-serif text-lg">Contacto</h3>
+            <h3 className="font-display text-sm tracking-widest text-primary">Contacto</h3>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" /> Av. Julius Nyerere, Maputo</li>
               <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-primary" /> +258 84 000 0000</li>
@@ -308,19 +397,19 @@ function LandingPage() {
             </ul>
           </div>
           <div>
-            <h3 className="font-serif text-lg">Siga-nos</h3>
+            <h3 className="font-display text-sm tracking-widest text-primary">Redes</h3>
             <div className="mt-4 flex gap-3">
-              <a href="#" className="rounded-full bg-secondary p-2.5 transition-colors hover:bg-primary hover:text-primary-foreground" aria-label="Instagram">
+              <a href="#" className="rounded-sm border border-border/60 p-2.5 transition-colors hover:border-primary hover:text-primary" aria-label="Instagram">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="rounded-full bg-secondary p-2.5 transition-colors hover:bg-primary hover:text-primary-foreground" aria-label="Facebook">
+              <a href="#" className="rounded-sm border border-border/60 p-2.5 transition-colors hover:border-primary hover:text-primary" aria-label="Facebook">
                 <Facebook className="h-5 w-5" />
               </a>
             </div>
           </div>
         </div>
         <div className="container mx-auto mt-10 border-t border-border/60 px-4 pt-6 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Salão [Nome do Salão]. Todos os direitos reservados.
+          © {new Date().getFullYear()} Barbearia [Nome]. Todos os direitos reservados.
         </div>
       </footer>
     </div>
