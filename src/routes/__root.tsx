@@ -31,21 +31,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Salão [Nome do Salão] — Beleza & Elegância em Moçambique" },
+      { title: "Barbearia [Nome] — Cortes Africanos & Moçambicanos | Maputo" },
       {
         name: "description",
         content:
-          "Salão de beleza em Moçambique. Tranças, cortes, manicure, alisamento e mais. Agende online em segundos.",
+          "Barbearia em Maputo especializada em cortes africanos e moçambicanos: fade, dreads, tranças, designs. Agende online e pague com M-Pesa, e-Mola ou transferência.",
       },
-      { property: "og:title", content: "Salão [Nome do Salão] — Beleza & Elegância em Moçambique" },
-      { property: "og:description", content: "Salão [Nome do Salão] is a booking website for a hair salon, allowing clients to view services, book appointments, and manage their schedule." },
+      { property: "og:title", content: "Barbearia [Nome] — Cortes Africanos & Moçambicanos" },
+      { property: "og:description", content: "Estilo, atitude e tradição. Marque o seu corte online em poucos cliques." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Salão [Nome do Salão] — Beleza & Elegância em Moçambique" },
-      { name: "description", content: "Salão [Nome do Salão] is a booking website for a hair salon, allowing clients to view services, book appointments, and manage their schedule." },
-      { name: "twitter:description", content: "Salão [Nome do Salão] is a booking website for a hair salon, allowing clients to view services, book appointments, and manage their schedule." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c5fdb90b-9c41-4386-8597-54f4f6a321af/id-preview-a001f399--285d510b-7dca-49f1-8b50-4554daa009f5.lovable.app-1776614041899.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c5fdb90b-9c41-4386-8597-54f4f6a321af/id-preview-a001f399--285d510b-7dca-49f1-8b50-4554daa009f5.lovable.app-1776614041899.png" },
+      { name: "twitter:title", content: "Barbearia [Nome] — Cortes Africanos & Moçambicanos" },
+      { name: "twitter:description", content: "Estilo, atitude e tradição. Marque o seu corte online em poucos cliques." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -53,7 +50,7 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap",
+          href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap",
       },
     ],
   }),
