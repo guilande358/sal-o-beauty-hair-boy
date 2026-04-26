@@ -5,7 +5,8 @@ import { useAuth } from "@/lib/auth-context";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Calendar, Clock, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, Clock, X, Wallet } from "lucide-react";
 import { formatDateISO, formatPtDate } from "@/lib/slots";
 import { toast } from "sonner";
 
@@ -21,6 +22,7 @@ interface Booking {
   status: "booked" | "occupied";
   notas: string | null;
   services: { nome: string; preco_mzn: number } | null;
+  payments: { status: "pendente" | "confirmado" | "rejeitado" }[];
 }
 
 const CANCEL_HOURS_BEFORE = 2;
@@ -33,7 +35,7 @@ function MyAppointmentsPage() {
     if (!user) return;
     supabase
       .from("appointments")
-      .select("id, data, hora_inicio, hora_fim, status, notas, services(nome, preco_mzn)")
+      .select("id, data, hora_inicio, hora_fim, status, notas, services(nome, preco_mzn), payments(status)")
       .eq("user_id", user.id)
       .order("data", { ascending: false })
       .order("hora_inicio", { ascending: false })
@@ -104,6 +106,10 @@ function MyAppointmentsPage() {
 }
 
 function BookingCard({ b, onCancel }: { b: Booking; onCancel?: (id: string) => void }) {
+  const latestPayment = b.payments?.[b.payments.length - 1];
+  const paymentStatus = latestPayment?.status;
+  const showPayLink = !paymentStatus || paymentStatus === "rejeitado";
+
   return (
     <Card className="border-border/60">
       <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -113,10 +119,23 @@ function BookingCard({ b, onCancel }: { b: Booking; onCancel?: (id: string) => v
             <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" /> {formatPtDate(new Date(b.data + "T00:00:00"))}</span>
             <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" /> {b.hora_inicio.slice(0, 5)}–{b.hora_fim.slice(0, 5)}</span>
           </p>
+          <div className="mt-2 flex items-center gap-2">
+            {paymentStatus === "confirmado" && <Badge variant="default" className="text-xs">Pagamento confirmado</Badge>}
+            {paymentStatus === "pendente" && <Badge variant="secondary" className="text-xs">Pagamento pendente</Badge>}
+            {paymentStatus === "rejeitado" && <Badge variant="destructive" className="text-xs">Pagamento rejeitado</Badge>}
+            {!paymentStatus && <Badge variant="outline" className="text-xs">Sem pagamento</Badge>}
+          </div>
           {b.notas && <p className="mt-2 text-sm italic text-muted-foreground">"{b.notas}"</p>}
         </div>
         <div className="flex items-center gap-3">
-          {b.services && <span className="font-serif text-lg text-primary">{b.services.preco_mzn} MZN</span>}
+          {b.services && <span className="font-display text-lg text-primary">{b.services.preco_mzn} MZN</span>}
+          {showPayLink && (
+            <Button asChild size="sm" variant="default">
+              <Link to="/app/pagamento/$appointmentId" params={{ appointmentId: b.id }}>
+                <Wallet className="h-4 w-4" /> Pagar
+              </Link>
+            </Button>
+          )}
           {onCancel && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
