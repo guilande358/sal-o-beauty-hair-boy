@@ -1,126 +1,130 @@
+## Visão geral
 
-# Barbearia [Nome] — Rebrand Masculino + Pagamentos
+Adicionar **três blocos novos** ao site, mantendo todo o sistema atual de clientes (`/app/*`, agendamento autenticado, pagamentos M-Pesa/e-Mola) intacto:
 
-Transformar o salão feminino numa **barbearia masculina** moçambicana, com catálogo de cortes africanos, novo estilo visual e secção de pagamentos via carteira móvel e transferência bancária.
+1. **Formulário público** `/agendar` — qualquer pessoa marca somente com conta. 
+2. **Painel do propriet­ário `/admin**` — vê todos os agendamentos (autenticados + públicos) em tempo real, com calendário, contadores e geração de PDF de comprovativo por agendamento.
+3. **PWA + Web Push completo** — instalável, com notificação push nativa quando chega novo agendamento (também quando a app está fechada).
 
-## 1. Rebrand visual (estilo masculino)
+Email de aviso ao proprietário usa **Lovable Emails como principal** e **Resend como fallback** automático se Lovable falhar.
 
-Atualizar `src/styles.css`:
-- **Paleta nova**: preto profundo (#0E0E0E) como background, branco osso (#F5F5F4), dourado/âmbar (#C9A24A) como acento, vermelho-tijolo (#8B2E1F) secundário.
-- **Tipografia**: manter `Playfair Display` para títulos mas trocar acentos para `Bebas Neue` ou `Oswald` (condensada, masculina) nos labels/CTAs. Body continua `Inter`.
-- Cantos menos arredondados (`--radius: 0.375rem`), sombras mais duras, texturas escuras.
-- Status colors mantêm-se (livre/marcado/ocupado).
+---
 
-Actualizar `src/components/Logo.tsx` para um wordmark mais robusto (ex.: ícone de tesoura/navalha + "BARBEARIA").
+## 1. Base de dados (migration)
 
-## 2. Landing page (`src/routes/index.tsx`)
+Em vez de criar tabelas paralelas (`agendamentos`, `proprietario`) que duplicariam o sistema, **estende o esquema existente** para suportar reservas públicas anónimas e push:
 
-- Hero novo: imagem de barbearia, headline **"Estilo. Atitude. Tradição."**, subheadline sobre cortes africanos e moçambicanos, CTA **"Marcar Corte"**.
-- "Sobre" reescrito no masculino: barbearia em Maputo, especialistas em cortes africanos, fade, dreads, taper, designs.
-- Stats: "+5 Anos", "+2000 Cortes", "+15 Estilos".
-- Testemunhos substituídos por nomes masculinos moçambicanos (ex.: Ivandro Sitoe, Helton Macamo, Délcio Nhantumbo).
-- Footer: "Barbearia [Nome do Salão]".
-- Remover linguagem feminina ("clientes satisfeitas" → "clientes satisfeitos", "suas unhas" removido, etc.).
+- `appointments`:
+  - `user_id` continua a permitir NULL (já permite). Adicionar colunas:
+    - `nome_cliente TEXT` — preenchido por reservas anónimas
+    - `telefone TEXT` — idem
+    - `comprovativo_url TEXT` — link para PDF/imagem opcional submetida no formulário público
+    - `codigo TEXT` — código curto único (ex.: `BBR-7F3K`) para o PDF de comprovativo
+  - Política RLS nova: `INSERT` público (anon) permitido **apenas** se `user_id IS NULL` e `nome_cliente IS NOT NULL` e `status = 'booked'`.
+  - `REPLICA IDENTITY FULL` + `ALTER PUBLICATION supabase_realtime ADD TABLE appointments` para Realtime.
+- `push_subscriptions` — nova tabela:
+  - `id, user_id (FK auth.users), endpoint UNIQUE, p256dh, auth, created_at`
+  - RLS: o próprio user faz INSERT/SELECT/DELETE das suas; admins veem todas.
+- `notification_settings` — nova tabela single-row para guardar email do proprietário (destinatário dos avisos), editável no /admin.
+- Bucket Storage **público** novo: `comprovativos-publicos` (separado do `comprovativos` privado existente, porque o formulário anónimo precisa de upload sem autenticação). Política: INSERT anon permitido, SELECT público.
 
-## 3. Galeria — catálogo de cortes africanos e moçambicanos
+A conta admin é criada **manualmente** pelo utilizador via registo normal + INSERT em `user_roles` (instruções no fim).
 
-Gerar **10–12 imagens novas** de cortes masculinos para `src/assets/`:
-- Low fade, High fade, Taper fade
-- Afro natural definido
-- Dreadlocks (locs curtos e médios)
-- Cornrows / tranças masculinas
-- Box braids masculinas
-- Mohawk africano / South-cut
-- Design com riscas (hair tattoo / line-up)
-- Mini twists
-- Bald fade com barba
+---
 
-Cada item da galeria mostra **nome do corte** em overlay e abre lightbox. Substitui as 6 fotos atuais.
+## 2. Formulário público `/agendar`
 
-## 4. Serviços — repor catálogo masculino
+Nova rota `src/routes/agendar.tsx` (não autenticada):
 
-Migração SQL para limpar `services` actual e inserir serviços de barbearia (preços MZN realistas para Maputo):
+- Campos: `nome_cliente*`, `telefone*`, `servico` (select de `services` ativos), `data` (date picker, Mon-Sat), `hora` (slots de 30min livres, lê do view `appointment_slots`), `comprovativo` (upload opcional para `comprovativos-publicos`).
+- Validação Zod no client.
+- Submissão: `INSERT` em `appointments` com `user_id=null`, gera `codigo` aleatório, depois chama server function `notify-new-appointment` (envia email + push ao admin).
+- Página de sucesso mostra resumo + código de referência + botão "Agendar outro".
+- Ligação do header da landing: novo botão "Agendar sem conta".
 
-| Serviço | Preço | Duração |
-|---|---|---|
-| Corte Simples (máquina) | 200 | 30 min |
-| Corte + Barba | 350 | 45 min |
-| Fade (Low/Mid/High) | 300 | 45 min |
-| Taper Fade | 350 | 45 min |
-| Bald Fade + Line-up | 400 | 60 min |
-| Dreadlocks (manutenção) | 600 | 90 min |
-| Tranças Masculinas / Cornrows | 500 | 90 min |
-| Design / Hair Tattoo | 250 | 30 min |
-| Aparar Barba | 150 | 20 min |
-| Lavagem + Hidratação | 200 | 30 min |
-| Pacote Pai & Filho | 450 | 60 min |
+---
 
-Página `/app/servicos` e secção da landing puxam dinamicamente — só precisam atualizar copy ("Os Nossos Serviços" → "Os Nossos Cortes").
+## 3. Painel `/admin`
 
-## 5. Pagamentos (M-Pesa, e-Mola, Transferência bancária)
+Nova área protegida (role admin obrigatória). Estrutura de rotas:
 
-Esta é uma barbearia local — **não há gateway de pagamento online integrado** (não há Stripe/Paddle em MZN para mobile money local). A solução é um **fluxo manual de comprovativo de pagamento**: o cliente paga via carteira/transferência e envia o comprovativo, o salão confirma.
+- `src/routes/admin.tsx` — layout + guard (`beforeLoad` valida sessão **e** `has_role(uid, 'admin')`; redirect para `/login` ou `/` se falhar).
+- `src/routes/admin.index.tsx` — dashboard com:
+  - Cards: **Total hoje**, **Pendentes de pagamento**, **Próximas 7 dias**, **Total do mês**.
+  - Lista de agendamentos em tempo real (subscrição `postgres_changes` em `appointments` e `payments`), ordenada por data/hora.
+  - Cada linha mostra: cliente (nome do profile OU `nome_cliente`), telefone, serviço, data/hora, status pagamento, badge "Anónimo" se `user_id IS NULL`.
+  - Ações por linha: **Gerar comprovativo (PDF)**, **Ver comprovativo de pagamento** (se houver), **Cancelar**, **Marcar pago**.
+  - Toast + som ao chegar novo agendamento via Realtime.
+- `src/routes/admin.calendario.tsx` — vista calendário usando **react-big-calendar** (mês/semana/dia), eventos clicáveis abrem o detalhe.
+- `src/routes/admin.definicoes.tsx` — gere `notification_settings` (email destinatário) + ativar/desativar push neste dispositivo + lista de subscrições push ativas.
 
-### Base de dados (nova migração)
+PDF de comprovativo gerado client-side com **@react-pdf/renderer**: cabeçalho com logo + "Barbearia [Nome]", dados do agendamento, código, QR opcional, rodapé com contactos. Botões de **Download** e **Imprimir**.
 
-Tabela `payments`:
-```
-id uuid pk
-appointment_id uuid → appointments.id (cascade)
-user_id uuid
-metodo enum('mpesa','emola','transferencia_bancaria')
-valor_mzn integer
-referencia text  -- número de transação ou referência bancária
-comprovativo_url text  -- upload opcional
-status enum('pendente','confirmado','rejeitado') default 'pendente'
-notas text
-created_at, updated_at
-```
-+ RLS: utilizador vê/insere os seus; admins gerem todos.
-+ Storage bucket `comprovativos` (privado, signed URLs).
+---
 
-Tabela `payment_methods` (configuração da barbearia, gerida pelo admin):
-```
-id, tipo, titular, numero, instrucoes, ativo
-```
-Pré-populada com dados placeholder:
-- **M-Pesa (Vodacom)** — 84 XXX XXXX — Nome do Titular
-- **e-Mola (Movitel)** — 86 XXX XXXX — Nome do Titular
-- **Transferência Bancária** — BCI / Millennium BIM — IBAN MZ00 0000 ... — Nome do Titular
+## 4. Notificação ao proprietário (email + push)
 
-### Fluxo no app
+Server function `notify-new-appointment` (`src/utils/notifications.functions.ts`):
 
-**Após confirmar agendamento** em `/app/agenda`, redirecionar para nova página `/app/pagamento/$appointmentId`:
-1. Mostra resumo do agendamento (serviço, data, hora, total MZN).
-2. Mostra os 3 métodos disponíveis em cards (logo + número + instruções + botão "copiar").
-3. Formulário: escolher método, inserir referência da transação, opcional carregar screenshot do comprovativo.
-4. Submeter → cria registo `payments` com status `pendente` → toast "Aguardando confirmação do salão".
+1. Busca destinatário em `notification_settings`.
+2. Tenta enviar via **Lovable Emails** (queue `transactional_emails`, template React Email com detalhes do agendamento + link para `/admin`).
+3. Se falhar (timeout, erro ou domínio não configurado), faz **fallback para Resend** via gateway de connectors (`/resend/emails`) usando `LOVABLE_API_KEY` + `RESEND_API_KEY`.
+4. Envia **Web Push** para todas as subscrições em `push_subscriptions` de utilizadores admin, em paralelo. Subscrições inválidas (410 Gone) são apagadas automaticamente.
 
-**Página `/app/meus-agendamentos`**: cada agendamento ganha badge do estado de pagamento (`Pendente` / `Confirmado` / `Sem pagamento`) e link "Pagar agora" se aplicável.
+Uma única chamada do formulário público (e do `/app/agenda` autenticado) dispara este server function.
 
-**Nova página `/app/pagamentos`** na navegação: histórico de pagamentos do utilizador.
+**Setup necessário:**
 
-### Landing — secção "Pagamento"
+- Configurar email domain Lovable (botão abaixo).
+- Conectar Resend para fallback (peço a `RESEND_API_KEY` quando chegarmos a essa fase, depois do email principal).
+- Gerar par de chaves VAPID e guardar como secrets `VAPID_PUBLIC_KEY` (também exposta como `VITE_VAPID_PUBLIC_KEY`) e `VAPID_PRIVATE_KEY`.
 
-Nova secção entre Serviços e Galeria:
-- Título **"Como pagar"**, três cards lado a lado (M-Pesa, e-Mola, Transferência) com ícones e instruções.
-- Texto: "Pague com a sua carteira móvel ou por transferência. Confirma após o agendamento."
+---
 
-## 6. Navegação
+## 5. PWA + Web Push
 
-Atualizar `src/routes/app.tsx` para incluir **Pagamentos** entre "Meus Agendamentos" e "Perfil". Renomear copy genérica para tom masculino.
+- `public/manifest.webmanifest`: nome "Barbearia [Nome] — Admin", `start_url: "/admin"`, `display: "standalone"`, `theme_color` âmbar/preto, ícones 192/512.
+- `public/sw.js` — service worker mínimo:
+  - Cache do shell estático (network-first para HTML, cache-first para assets).
+  - Listener `push` → `self.registration.showNotification(...)` com título "Novo agendamento" e dados do payload.
+  - Listener `notificationclick` → abre `/admin`.
+- `src/components/PWARegister.tsx` — regista o SW **apenas em produção e fora de iframe** (segue regra anti-iframe do preview Lovable). Em iframe, desinscreve SWs existentes.
+- `src/components/InstallPrompt.tsx` — banner "Instalar app" no `/admin` quando o evento `beforeinstallprompt` dispara.
+- `src/lib/push.ts` — função `subscribeToPush()`: pede permissão, regista subscrição com a `VITE_VAPID_PUBLIC_KEY`, guarda em `push_subscriptions`. Botão "Ativar notificações neste dispositivo" em `/admin/definicoes`.
+- Server route `/api/public/send-push` é interno e protegido por header secreto; o envio real usa a biblioteca `web-push` dentro de `notify-new-appointment`.
 
-## 7. Detalhes técnicos
+**Aviso ao utilizador**: Web Push **não funciona no preview do Lovable** (iframe + dev mode). Só funciona depois de **publicar** e instalar a PWA no telemóvel/desktop.
 
-- Migração SQL única: criar enums `payment_method` e `payment_status`, tabelas `payments` e `payment_methods`, RLS, bucket de storage e seed dos métodos placeholder + reset+seed de `services`.
-- Novas rotas: `src/routes/app.pagamento.$appointmentId.tsx`, `src/routes/app.pagamentos.tsx`.
-- Imagens geradas para galeria (substituir `gallery-1..6.jpg` e adicionar `gallery-7..12.jpg`) + nova `hero-barbearia.jpg` + `about-barbearia.jpg`.
-- Componente reutilizável `PaymentMethodCard` em `src/components/PaymentMethodCard.tsx`.
-- `package.json`: adicionar `@fontsource/bebas-neue` (ou Oswald) e importar em `styles.css`.
-- Sem alterações em `client.ts` / `types.ts` (auto-gerados).
+---
 
-## Fora de scope
+## 6. Como criar a tua conta admin (a fazeres tu, depois do build)
 
-- Integração API real do M-Pesa/e-Mola (requer contas business + KYC; podemos adicionar depois).
-- Painel admin para confirmar pagamentos (estrutura RLS já preparada — UI fica para próxima iteração).
-- Notificações WhatsApp/SMS automáticas.
+1. Vai a `/registar` e cria conta normal com o teu email.
+2. Em **Backend → SQL Editor** (vou abrir para ti depois com o botão "Ver Backend"), corre:
+  ```sql
+   INSERT INTO public.user_roles (user_id, role)
+   SELECT id, 'admin' FROM auth.users WHERE email = 'TEU_EMAIL_AQUI'
+   ON CONFLICT DO NOTHING;
+  ```
+3. Faz logout/login. `/admin` fica acessível.
+
+---
+
+## 7. Fora de âmbito
+
+- Substituir o sistema atual de clientes — fica intacto e a coexistir.
+- Calendário no formulário público — usa um simples date+time picker; o calendário rico fica só no /admin.
+- Templates de email para clientes (só o admin recebe aviso).
+
+---
+
+## Detalhes técnicos (para o agente)
+
+- **Migrations**: uma para schema (colunas + tabelas + bucket + RLS + realtime publication), outra fica como seed via INSERT tool.
+- **Bibliotecas a instalar**: `react-big-calendar`, `@react-pdf/renderer`, `web-push`, `date-fns` (já presente provavelmente), `zod` (provavelmente já presente). Verificar antes de instalar.
+- **Bucket público**: `comprovativos-publicos` distinto do existente `comprovativos` para não relaxar políticas do bucket privado.
+- **Realtime**: `ALTER PUBLICATION supabase_realtime ADD TABLE appointments` + `ADD TABLE payments`.
+- **Server functions** novas em `src/utils/notifications.functions.ts`: `notifyNewAppointment(appointmentId)`, `sendOwnerEmail(...)` (Lovable→Resend fallback), `sendPushToAdmins(payload)`.
+- **PWA**: NÃO usar `vite-plugin-pwa`; manifest + SW manuais conforme regra anti-iframe.
+- **Auth-email-hook**: não tocar; só transactional emails para admin.
+- Antes de construir, peço para configurar email domain Lovable (botão na próxima resposta).

@@ -16,36 +16,48 @@ export type Database = {
     Tables: {
       appointments: {
         Row: {
+          codigo: string | null
+          comprovativo_url: string | null
           created_at: string
           data: string
           hora_fim: string
           hora_inicio: string
           id: string
+          nome_cliente: string | null
           notas: string | null
           service_id: string | null
           status: Database["public"]["Enums"]["appointment_status"]
+          telefone: string | null
           user_id: string | null
         }
         Insert: {
+          codigo?: string | null
+          comprovativo_url?: string | null
           created_at?: string
           data: string
           hora_fim: string
           hora_inicio: string
           id?: string
+          nome_cliente?: string | null
           notas?: string | null
           service_id?: string | null
           status?: Database["public"]["Enums"]["appointment_status"]
+          telefone?: string | null
           user_id?: string | null
         }
         Update: {
+          codigo?: string | null
+          comprovativo_url?: string | null
           created_at?: string
           data?: string
           hora_fim?: string
           hora_inicio?: string
           id?: string
+          nome_cliente?: string | null
           notas?: string | null
           service_id?: string | null
           status?: Database["public"]["Enums"]["appointment_status"]
+          telefone?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -57,6 +69,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notification_settings: {
+        Row: {
+          email_ativo: boolean
+          email_destinatario: string
+          id: string
+          push_ativo: boolean
+          singleton: boolean
+          updated_at: string
+        }
+        Insert: {
+          email_ativo?: boolean
+          email_destinatario: string
+          id?: string
+          push_ativo?: boolean
+          singleton?: boolean
+          updated_at?: string
+        }
+        Update: {
+          email_ativo?: boolean
+          email_destinatario?: string
+          id?: string
+          push_ativo?: boolean
+          singleton?: boolean
+          updated_at?: string
+        }
+        Relationships: []
       }
       payment_methods: {
         Row: {
@@ -172,6 +211,36 @@ export type Database = {
           nome?: string | null
           telefone?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          user_agent?: string | null
+          user_id?: string
         }
         Relationships: []
       }
