@@ -23,6 +23,7 @@ import {
   type AppointmentSlotRow,
   type Slot,
 } from "@/lib/slots";
+import { notifyNewAppointment } from "@/lib/notify";
 
 const searchSchema = z.object({
   service: z.string().optional(),
@@ -173,6 +174,13 @@ function AgendaPage() {
       description: `${svc.nome} · ${formatPtDate(selectedDate)} às ${bookingSlot.start}`,
     });
     setBookingSlot(null);
+
+    // Fire-and-forget push notification to owner
+    void notifyNewAppointment({
+      nome_cliente: user.email ?? "Cliente",
+      servico: svc.nome,
+      data_hora: `${formatPtDate(selectedDate)} às ${bookingSlot.start}`,
+    });
 
     // Recupera o id do agendamento criado para redirecionar para pagamento
     const { data: created } = await supabase
