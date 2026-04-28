@@ -21,6 +21,7 @@ import { Route as AppPerfilRouteImport } from './routes/app.perfil'
 import { Route as AppPagamentosRouteImport } from './routes/app.pagamentos'
 import { Route as AppMeusAgendamentosRouteImport } from './routes/app.meus-agendamentos'
 import { Route as AppAgendaRouteImport } from './routes/app.agenda'
+import { Route as ApiSendPushNotificationRouteImport } from './routes/api.send-push-notification'
 import { Route as AppPagamentoAppointmentIdRouteImport } from './routes/app.pagamento.$appointmentId'
 
 const RegistarRoute = RegistarRouteImport.update({
@@ -83,6 +84,11 @@ const AppAgendaRoute = AppAgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiSendPushNotificationRoute = ApiSendPushNotificationRouteImport.update({
+  id: '/api/send-push-notification',
+  path: '/api/send-push-notification',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppPagamentoAppointmentIdRoute =
   AppPagamentoAppointmentIdRouteImport.update({
     id: '/pagamento/$appointmentId',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/recuperar': typeof RecuperarRoute
   '/redefinir': typeof RedefinirRoute
   '/registar': typeof RegistarRoute
+  '/api/send-push-notification': typeof ApiSendPushNotificationRoute
   '/app/agenda': typeof AppAgendaRoute
   '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
   '/app/pagamentos': typeof AppPagamentosRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/recuperar': typeof RecuperarRoute
   '/redefinir': typeof RedefinirRoute
   '/registar': typeof RegistarRoute
+  '/api/send-push-notification': typeof ApiSendPushNotificationRoute
   '/app/agenda': typeof AppAgendaRoute
   '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
   '/app/pagamentos': typeof AppPagamentosRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/recuperar': typeof RecuperarRoute
   '/redefinir': typeof RedefinirRoute
   '/registar': typeof RegistarRoute
+  '/api/send-push-notification': typeof ApiSendPushNotificationRoute
   '/app/agenda': typeof AppAgendaRoute
   '/app/meus-agendamentos': typeof AppMeusAgendamentosRoute
   '/app/pagamentos': typeof AppPagamentosRoute
@@ -144,6 +153,7 @@ export interface FileRouteTypes {
     | '/recuperar'
     | '/redefinir'
     | '/registar'
+    | '/api/send-push-notification'
     | '/app/agenda'
     | '/app/meus-agendamentos'
     | '/app/pagamentos'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/recuperar'
     | '/redefinir'
     | '/registar'
+    | '/api/send-push-notification'
     | '/app/agenda'
     | '/app/meus-agendamentos'
     | '/app/pagamentos'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/recuperar'
     | '/redefinir'
     | '/registar'
+    | '/api/send-push-notification'
     | '/app/agenda'
     | '/app/meus-agendamentos'
     | '/app/pagamentos'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   RecuperarRoute: typeof RecuperarRoute
   RedefinirRoute: typeof RedefinirRoute
   RegistarRoute: typeof RegistarRoute
+  ApiSendPushNotificationRoute: typeof ApiSendPushNotificationRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -277,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgendaRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/send-push-notification': {
+      id: '/api/send-push-notification'
+      path: '/api/send-push-notification'
+      fullPath: '/api/send-push-notification'
+      preLoaderRoute: typeof ApiSendPushNotificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/pagamento/$appointmentId': {
       id: '/app/pagamento/$appointmentId'
       path: '/pagamento/$appointmentId'
@@ -316,6 +336,7 @@ const rootRouteChildren: RootRouteChildren = {
   RecuperarRoute: RecuperarRoute,
   RedefinirRoute: RedefinirRoute,
   RegistarRoute: RegistarRoute,
+  ApiSendPushNotificationRoute: ApiSendPushNotificationRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
