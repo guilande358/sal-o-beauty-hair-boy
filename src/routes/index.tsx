@@ -107,7 +107,7 @@ function LandingPage() {
       .then(({ data }) => setServices(data ?? []));
   }, []);
 
-  const ctaTarget = user ? "/app" : "/login";
+  const ctaTarget = user ? "/app" : "/agendar";
 
   return (
     <div className="min-h-screen bg-background">
